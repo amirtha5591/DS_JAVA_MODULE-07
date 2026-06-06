@@ -1,25 +1,25 @@
-# Ex7 Removal of Nodes with a Specific Value from a Linked List
+# Ex8 Detection of Cycle and Finding the Starting Node in a Linked List
 ## DATE:
 ## AIM:
-To write a java  program that removes all nodes from a linked list whose value matches a given integer (val) and returns the new head of the modified linked list.
-
+To write a program that detects a cycle in a linked list and returns the node where the cycle begins.
+If there is no cycle, the program should return null without modifying the linked list.
 ## Algorithm
+1.Start slow = head and fast = head.
 
-1.Move head forward until it reaches a node whose value is not equal to val. 
+2.Move slow by 1 step and fast by 2 steps until they meet or fast becomes null.
 
-2.If the list becomes empty, return null. 
+3.If fast becomes null, return null (no cycle).
 
-3.Start from the new head and traverse the list using a pointer (current).
+4.Move slow to head, keep fast at meeting point.
 
-4.If current.next contains val, skip that node 
-
-5.Otherwise, move to the next node. Continue until the end, then return the modified head.
+5.Move both one step at a time until they meet — this node is the cycle start.
 
 
 ## Program:
 ```
 
-class RemoveNodes {
+class DetectCycle {
+
     static class Node {
         int data;
         Node next;
@@ -30,64 +30,63 @@ class RemoveNodes {
         }
     }
 
-    static Node removeElements(Node head, int val) {
-        
-        while (head != null && head.data == val) {
-            head = head.next;
-        }
+    static Node detectCycle(Node head) {
+        if (head == null || head.next == null) 
+            return null;
 
-        if (head == null) return null;
+        Node slow = head;
+        Node fast = head;
 
-        Node current = head;
-        while (current.next != null) {
-            if (current.next.data == val) {
-                current.next = current.next.next; // Skip node
-            } else {
-                current = current.next; // Move ahead
+        while (fast != null && fast.next != null) {
+            slow = slow.next;          
+            fast = fast.next.next;     
+
+            if (slow == fast) {        
+                break;
             }
         }
 
-        return head; // Return new head
-    }
+        if (fast == null || fast.next == null)
+            return null;
 
-    static void display(Node head) {
-        Node temp = head;
-        while (temp != null) {
-            System.out.print(temp.data + " ");
-            temp = temp.next;
+        slow = head;
+        while (slow != fast) {
+            slow = slow.next;
+            fast = fast.next;
         }
-        System.out.println();
+
+        return slow;   
     }
 
     public static void main(String[] args) {
 
         Node head = new Node(1);
         head.next = new Node(2);
-        head.next.next = new Node(6);
-        head.next.next.next = new Node(3);
-        head.next.next.next.next = new Node(6);
-        head.next.next.next.next.next = new Node(4);
+        head.next.next = new Node(3);
+        head.next.next.next = new Node(4);
+        head.next.next.next.next = new Node(5);
 
-        System.out.println("Original Linked List:");
-        display(head);
+        head.next.next.next.next.next = head.next.next;
 
-        int val = 6;
+        Node cycleStart = detectCycle(head);
 
-        head = removeElements(head, val);
-
-        System.out.println("Linked List after removing value " + val + ":");
-        display(head);
+        if (cycleStart != null)
+            System.out.println("Cycle starts at node: " + cycleStart.data);
+        else
+            System.out.println("No cycle detected.");
     }
 }
- 
-*/
+  
+
 ```
 
 ## Output:
 
-<img width="577" height="178" alt="514427177-3fc5c634-4b7f-4c1f-a939-42d281793676" src="https://github.com/user-attachments/assets/8b491571-ae80-4bdb-9d3d-3aa8c413a212" />
+<img width="798" height="175" alt="514427923-9d8d99fc-0ab8-4708-8517-3b5c6a2663a6" src="https://github.com/user-attachments/assets/9cf07013-1fb6-4b49-94e4-8696175c6272" />
+
 
 
 
 ## Result:
-The java program successfully removes all nodes with the specified value (val) from the linked list and returns the new head.
+The program successfully detects whether a cycle exists in the linked list.
+If a cycle is present, it correctly identifies and returns the node where the cycle begins.
